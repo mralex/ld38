@@ -113,6 +113,20 @@ class GameMap:
 	func get_tile(tilePos):
 		return data[tilePos.y][tilePos.x]
 	
+	func reset_tile(tilePos):
+		var tile = data[tilePos.y][tilePos.x]
+		var type = tile.type
+		
+		if type == 2:
+			return
+		
+		if type == 7:
+			tile.type = 0
+		else:
+			tile.type = 2
+		
+		refresh_tile_map(tilePos.x, tilePos.y)
+	
 const mapSize = Vector2(32, 22)
 var clock
 var map
