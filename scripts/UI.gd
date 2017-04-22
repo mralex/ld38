@@ -23,8 +23,12 @@ func _ready():
 
 func update_tile_label(tilePos):
 	var tileLabel = get_node("TileLabel")
+	var tile = simNode.map.get_tile(tilePos.x, tilePos.y)
 	
-	tileLabel.set_text("(%s,%s)\n%s" % [tilePos.x, tilePos.y, simNode.map.get_tile(tilePos).type_string()])
+	if tile == null:
+		return
+
+	tileLabel.set_text("(%s,%s)\n%s" % [tilePos.x, tilePos.y, tile.type_string()])
 
 func _cursor_updated(tilePos):
 	if tilePos.x < 0 or tilePos.y < 0 or tilePos.x > simNode.map.width - 1 or tilePos.y > simNode.map.height - 1:

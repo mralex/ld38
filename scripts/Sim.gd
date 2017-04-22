@@ -1,5 +1,7 @@
 extends Node2D
 
+const Simplex = preload("Simplex.gd")
+
 class GameClock:
 	signal tick
 	var timeMultiplier = 1.0
@@ -52,33 +54,38 @@ class GameClock:
 class GameTile:
 	var position = Vector2(0, 0)
 	var type = 0
+	var map
 	
-	func _init(x, y, type):
+	func _init(map, x, y, type):
+		self.map = map
 		self.type = type
 		self.position = Vector2(x, y)
 	
+	func _tick(clock):
+		pass
+	
 	func type_string():
 		if type == 0:
-			return "Grass"
-		elif type == 1:
-			return "Water"
-		elif type == 2:
 			return "Dirt"
-		elif type == 3:
-			return "Concrete"
-		elif type == 4:
-			return "Roses"
-		elif type == 5:
-			return "Dafodils"
-		elif type == 6:
-			return "Orchids"
-		elif type == 7:
+		elif type == 1:
+			return "Grass"
+		elif type == 2:
 			return "Weeds"
+		elif type == 3:
+			return "Water"
+		elif type == 4:
+			return "Concrete"
+		elif type == 5:
+			return "Roses"
+		elif type == 6:
+			return "Dafodils"
+		elif type == 7:
+			return "Orchids"
 		else:
 			return "Unknown!"
 
 	func randomize_type():
-		type = randi() % 8
+		type = randi() % 7 + 1
 
 class GameMap:
 	var data = []
@@ -90,42 +97,79 @@ class GameMap:
 		self.width = width
 		self.height = height
 		self.tileMap = tileMap
-
-		# Initialize map to dirt
-		for y in range(height):
-			data.append([])
-			for x in range(width):
-				data[y].append(GameTile.new(x, y, 2))
+		
+		data.resize(width * height)
 	
+		randomize()
+		var s = (randi() % 100 + 10) * 0.001
+		
+		for x in range(width):
+			for y in range(height):
+				var noise = Simplex.simplex2(x * s, y * s) / 2.0 + 0.5
+				var type = 0
+				if noise < 0.7:
+					type = 1
+				elif noise < 0.8:
+					type = 0
+				else:
+					type = 3
+				
+				data[width * y + x] = GameTile.new(self, x, y, type)
+				#data.append()
+				#refresh_tile_map(x, y)
+
+		refresh_entire_tile_map()
+		# Initialize map to grass
+		#for y in range(height):
+	#		#data.append([])
+#			for x in range(width):
+#				data[y].append(GameTile.new(x, y, 1))
+#				refresh_tile_map(x, y)
+	
+	func _tick(clock):
+		for cell in data:
+			cell._tick(clock)
+
 	func update_randomly():
 		var x = randi() % self.width
 		var y = randi() % self.height
 		
-		self.data[y][x].randomize_type()
+		get_tile(x, y).randomize_type()
 		refresh_tile_map(x, y)
 		# print("Updated tile %s,%s to %s" % [x, y, data[y][x]])
 	
 	func refresh_tile_map(x, y):
 		# Not a fan of directly poking the tile map from this class. 
 		# Fix that later I suppose...
-		self.tileMap.set_cell(x, y, self.data[y][x].type)
+		var tile = get_tile(x, y)
+		self.tileMap.set_cell(x, y, tile.type)
 	
-	func get_tile(tilePos):
-		return data[tilePos.y][tilePos.x]
+	func refresh_entire_tile_map():
+		for x in range(width):
+			for y in range(height):
+				self.tileMap.set_cell(x, y, get_tile(x, y).type)
 	
-	func reset_tile(tilePos):
-		var tile = data[tilePos.y][tilePos.x]
+	func get_tile(x, y):
+		var index = width * y + x
+
+		if index > data.size() - 1 || index < 0:
+			return null
+			
+		return data[index]
+	
+	func reset_tile(x, y):
+		var tile = get_tile(x, y)
 		var type = tile.type
 		
-		if type == 2:
+		if type == 0:
 			return
 		
-		if type == 7:
-			tile.type = 0
+		if type == 2:
+			tile.type = 1
 		else:
-			tile.type = 2
+			tile.type = 0
 		
-		refresh_tile_map(tilePos.x, tilePos.y)
+		#refresh_tile_map(x, y)
 	
 const mapSize = Vector2(32, 22)
 var clock
@@ -146,9 +190,12 @@ func initialize_map():
 
 func _process(delta):
 	clock.update(delta)
+	map.refresh_entire_tile_map()
 	
 func _tick():
+	map._tick(clock)
+
 	# Update a tile every 10 in-game minutes
 	if clock.minutes > lastTickUpdate && clock.minutes > 0 && clock.minutes % 10 == 0:
-		map.update_randomly()
+		#map.update_randomly()
 		lastTickUpdate = clock.minutes

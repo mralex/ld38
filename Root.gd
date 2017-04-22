@@ -57,4 +57,4 @@ func _set_speed_pause():
 	simNode.clock.set_speed(0)
 	
 func _reset_tile(tilePos):
-	simNode.map.reset_tile(tilePos)
+	simNode.map.reset_tile(tilePos.x, tilePos.y)
