@@ -172,7 +172,7 @@ margin/right = 8.0
 margin/bottom = 291.0
 custom_constants/button_separator = 13
 flat = true
-button/count = 5
+button/count = 6
 button/min_button_size = -1.0
 button/align = 4
 button/0/text = "Dig"
@@ -190,6 +190,9 @@ button/3/icon = null
 button/4/text = "Lay Grass"
 button/4/tooltip = ""
 button/4/icon = null
+button/5/text = "Mow Grass"
+button/5/tooltip = ""
+button/5/icon = null
 button/selected = 0
 
 [connection signal="button_up" from="UI/NormalButton" to="UI" method="_on_NormalButton_button_up"]

@@ -13,7 +13,8 @@ enum CURSOR_MODE {
 	PATH,
 	PLANT,
 	FILL_WATER,
-	GRASS
+	GRASS,
+	MOW_GRASS,
 }
 
 var mode = CURSOR_MODE.DIG
@@ -83,3 +84,5 @@ func _interact_tile(tilePos):
 		simNode.map.reset_tile(tilePos.x, tilePos.y)
 	elif mode == CURSOR_MODE.PATH:
 		simNode.map.lay_path(tilePos.x, tilePos.y)
+	elif mode == CURSOR_MODE.MOW_GRASS:
+		simNode.map.mow_grass(tilePos.x, tilePos.y)

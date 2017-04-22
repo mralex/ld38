@@ -81,4 +81,13 @@ modulate = Color( 0.355961, 0.0456543, 0.730469, 0.967216 )
 region = true
 region_rect = Rect2( 0, 0, 32, 32 )
 
+[node name="TallGrass" type="Sprite" parent="."]
+
+transform/pos = Vector2( 0, 2968.17 )
+transform/scale = Vector2( 32, 32 )
+texture = SubResource( 1 )
+modulate = Color( 0.494485, 0.607843, 0.027451, 1 )
+region = true
+region_rect = Rect2( 0, 0, 32, 32 )
+
 

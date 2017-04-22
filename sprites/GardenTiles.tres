@@ -82,4 +82,13 @@ lossy_quality = 0.7
 7/navigation_offset = Vector2( 16, 16 )
 7/shape_offset = Vector2( 0, 0 )
 7/shapes = [  ]
+8/name = "TallGrass"
+8/texture = SubResource( 1 )
+8/tex_offset = Vector2( 0, 0 )
+8/modulate = Color( 0.494485, 0.607843, 0.027451, 1 )
+8/region = Rect2( 0, 0, 32, 32 )
+8/occluder_offset = Vector2( 16, 16 )
+8/navigation_offset = Vector2( 16, 16 )
+8/shape_offset = Vector2( 0, 0 )
+8/shapes = [  ]
 

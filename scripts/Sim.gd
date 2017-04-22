@@ -11,6 +11,7 @@ enum TILE_TYPES {
 	ROSES,
 	DAFODILS,
 	ORCHIDS,
+	TALL_GRASS,
 }
 
 class GameClock:
@@ -64,7 +65,7 @@ class GameClock:
 
 class GameTile:
 	var position = Vector2(0, 0)
-	var type = 0
+	var type = TILE_TYPES.DIRT
 	var map
 	
 	func _init(map, x, y, type):
@@ -73,51 +74,59 @@ class GameTile:
 		self.position = Vector2(x, y)
 	
 	func _tick(clock):
-		if clock.minutes > 0 && clock.minutes % 60 != 0:
+		if clock.minutes > 0 && clock.minutes % 30 != 0:
 			return
 
 		var water = 0
 		var grass = 0
+		var tall_grass = 0
 		var surrounding = surrounding_tiles()
 	
 		for tile in surrounding:
 			if tile == null:
 				continue
 
-			if tile.type == 1:
+			if tile.type == TILE_TYPES.GRASS:
 				grass += 1
-			if tile.type == 3:
+			if tile.type == TILE_TYPES.WATER:
 				water += 1
+			if tile.type == TILE_TYPES.TALL_GRASS:
+				tall_grass += 1
 		
 		randomize()
 		# Dirt near water turns into grass
-		if type == 0 && water > 0 && randi() % 10 == 1:
-			type = 1
+		if type == TILE_TYPES.DIRT && water > 0 && randi() % 10 == 1:
+			type = TILE_TYPES.GRASS
 		# Dirt near grass turns into grass
-		elif type == 0 && grass > 0 && randi() % 10 == 1:
-			type = 1
+		elif type == TILE_TYPES.DIRT && grass > 0 && randi() % 10 == 1:
+			type = TILE_TYPES.GRASS
 		
 		randomize()
-		if type == 1 && randi() % 1000 == 1:
-			type = 2
+		var tall_grass_rate = 500
+		if tall_grass > 0:
+			tall_grass_rate = 50
+		if type == TILE_TYPES.GRASS && randi() % tall_grass_rate == 1:
+			type = TILE_TYPES.TALL_GRASS
 	
 	func type_string():
-		if type == 0:
+		if type == TILE_TYPES.DIRT:
 			return "Dirt"
-		elif type == 1:
+		elif type == TILE_TYPES.GRASS:
 			return "Grass"
-		elif type == 2:
+		elif type == TILE_TYPES.WEEDS:
 			return "Weeds"
-		elif type == 3:
+		elif type == TILE_TYPES.WATER:
 			return "Water"
-		elif type == 4:
+		elif type == TILE_TYPES.CONCRETE:
 			return "Concrete"
-		elif type == 5:
+		elif type == TILE_TYPES.ROSES:
 			return "Roses"
-		elif type == 6:
+		elif type == TILE_TYPES.DAFODILS:
 			return "Dafodils"
-		elif type == 7:
+		elif type == TILE_TYPES.ORCHIDS:
 			return "Orchids"
+		elif type == TILE_TYPES.TALL_GRASS:
+			return "Tall Grass"
 		else:
 			return "Unknown!"
 
@@ -227,6 +236,18 @@ class GameMap:
 			
 		# Can only place path on solid ground, not water
 		tile.type = TILE_TYPES.CONCRETE
+	
+	func mow_grass(x, y):
+		var tile = get_tile(x, y)
+		
+		if not tile:
+			return
+		
+		if tile.type != TILE_TYPES.TALL_GRASS:
+			return
+			
+		# Can only place path on solid ground, not water
+		tile.type = TILE_TYPES.GRASS
 	
 const mapSize = Vector2(32, 22)
 var clock
