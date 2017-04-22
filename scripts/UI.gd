@@ -10,7 +10,7 @@ var rootNode
 signal speed_normal
 signal speed_fast
 signal speed_pause
-
+signal mode_change
 
 func _ready():
 	# Called every time the node is added to the scene.
@@ -20,6 +20,8 @@ func _ready():
 	
 	simNode = get_node("../SimNode")
 	simNode.clock.connect("tick", self, "_tick")
+	
+	get_node("VButtonArray").connect("button_selected", self, "_on_mode_button_selected")
 
 func update_tile_label(tilePos):
 	var tileLabel = get_node("TileLabel")
@@ -54,6 +56,8 @@ func _tick():
 	update_date_time(simNode.clock.minutes)
 	update_money()
 
+func _on_mode_button_selected(index):
+	emit_signal("mode_change", index)
 
 func _on_NormalButton_button_up():
 	emit_signal("speed_normal")

@@ -159,6 +159,39 @@ shortcut = null
 text = "Pause"
 flat = false
 
+[node name="VButtonArray" type="VButtonArray" parent="UI"]
+
+anchor/right = 1
+focus/ignore_mouse = false
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 2
+margin/left = 12.0
+margin/top = 172.0
+margin/right = 8.0
+margin/bottom = 291.0
+custom_constants/button_separator = 13
+flat = true
+button/count = 5
+button/min_button_size = -1.0
+button/align = 4
+button/0/text = "Dig"
+button/0/tooltip = ""
+button/0/icon = null
+button/1/text = "Lay Decorative Path"
+button/1/tooltip = ""
+button/1/icon = null
+button/2/text = "Plant Seeds"
+button/2/tooltip = ""
+button/2/icon = null
+button/3/text = "Fill Water With Dirt"
+button/3/tooltip = ""
+button/3/icon = null
+button/4/text = "Lay Grass"
+button/4/tooltip = ""
+button/4/icon = null
+button/selected = 0
+
 [connection signal="button_up" from="UI/NormalButton" to="UI" method="_on_NormalButton_button_up"]
 
 [connection signal="button_up" from="UI/FastButton" to="UI" method="_on_FastButton_button_up"]

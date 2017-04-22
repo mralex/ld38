@@ -2,6 +2,17 @@ extends Node2D
 
 const Simplex = preload("Simplex.gd")
 
+enum TILE_TYPES {
+	DIRT,
+	GRASS,
+	WEEDS,
+	WATER,
+	CONCRETE,
+	ROSES,
+	DAFODILS,
+	ORCHIDS,
+}
+
 class GameClock:
 	signal tick
 	var timeMultiplier = 1.0
@@ -62,7 +73,33 @@ class GameTile:
 		self.position = Vector2(x, y)
 	
 	func _tick(clock):
-		pass
+		if clock.minutes > 0 && clock.minutes % 60 != 0:
+			return
+
+		var water = 0
+		var grass = 0
+		var surrounding = surrounding_tiles()
+	
+		for tile in surrounding:
+			if tile == null:
+				continue
+
+			if tile.type == 1:
+				grass += 1
+			if tile.type == 3:
+				water += 1
+		
+		randomize()
+		# Dirt near water turns into grass
+		if type == 0 && water > 0 && randi() % 10 == 1:
+			type = 1
+		# Dirt near grass turns into grass
+		elif type == 0 && grass > 0 && randi() % 10 == 1:
+			type = 1
+		
+		randomize()
+		if type == 1 && randi() % 1000 == 1:
+			type = 2
 	
 	func type_string():
 		if type == 0:
@@ -86,6 +123,21 @@ class GameTile:
 
 	func randomize_type():
 		type = randi() % 7 + 1
+		
+	func surrounding_tiles():
+		var surrounding = []
+		var x = position.x
+		var y = position.y
+		surrounding.append(self.map.get_tile(x + 1, y))
+		surrounding.append(self.map.get_tile(x + 1, y + 1))
+		surrounding.append(self.map.get_tile(x, y + 1))
+		surrounding.append(self.map.get_tile(x - 1, y + 1))
+		surrounding.append(self.map.get_tile(x - 1, y))
+		surrounding.append(self.map.get_tile(x - 1, y - 1))
+		surrounding.append(self.map.get_tile(x, y - 1))
+		surrounding.append(self.map.get_tile(x + 1, y - 1))
+		
+		return surrounding
 
 class GameMap:
 	var data = []
@@ -106,29 +158,24 @@ class GameMap:
 		for x in range(width):
 			for y in range(height):
 				var noise = Simplex.simplex2(x * s, y * s) / 2.0 + 0.5
-				var type = 0
+				var type = TILE_TYPES.DIRT
+				
 				if noise < 0.7:
-					type = 1
+					type = TILE_TYPES.GRASS
 				elif noise < 0.8:
-					type = 0
+					type = TILE_TYPES.DIRT
 				else:
-					type = 3
+					type = TILE_TYPES.WATER
 				
 				data[width * y + x] = GameTile.new(self, x, y, type)
-				#data.append()
-				#refresh_tile_map(x, y)
 
 		refresh_entire_tile_map()
-		# Initialize map to grass
-		#for y in range(height):
-	#		#data.append([])
-#			for x in range(width):
-#				data[y].append(GameTile.new(x, y, 1))
-#				refresh_tile_map(x, y)
 	
 	func _tick(clock):
-		for cell in data:
-			cell._tick(clock)
+		# Update tiles every minute
+		if clock.ticks % clock.ticksPerMinute == 0:
+			for cell in data:
+				cell._tick(clock)
 
 	func update_randomly():
 		var x = randi() % self.width
@@ -161,15 +208,25 @@ class GameMap:
 		var tile = get_tile(x, y)
 		var type = tile.type
 		
-		if type == 0:
+		if type == TILE_TYPES.WATER:
+			return
+			
+	#	if type == 0:
+	#		tile.type = 3
+	#	else:
+		tile.type = TILE_TYPES.DIRT
+	
+	func lay_path(x, y):
+		var tile = get_tile(x, y)
+		
+		if not tile:
 			return
 		
-		if type == 2:
-			tile.type = 1
-		else:
-			tile.type = 0
-		
-		#refresh_tile_map(x, y)
+		if tile.type == TILE_TYPES.WATER:
+			return
+			
+		# Can only place path on solid ground, not water
+		tile.type = TILE_TYPES.CONCRETE
 	
 const mapSize = Vector2(32, 22)
 var clock

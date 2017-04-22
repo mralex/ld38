@@ -6,6 +6,18 @@ signal cursor_clicked
 var simNode
 var uiNode
 
+var isMouseDown = false
+
+enum CURSOR_MODE {
+	DIG,
+	PATH,
+	PLANT,
+	FILL_WATER,
+	GRASS
+}
+
+var mode = CURSOR_MODE.DIG
+
 func _ready():
 	simNode = get_node("SimNode")
 	uiNode = get_node("UI")
@@ -30,11 +42,17 @@ func _fixed_process(delta):
 	
 	position_cursor(tilePos)
 	emit_signal("cursor_update", tilePos)
+	
+	if isMouseDown:
+		emit_signal("cursor_clicked", tilePos)
 
 func _input(ev):
-	if ev.type == InputEvent.MOUSE_BUTTON && ev.is_action_released("left_click"):
-		var tilePos = tile_at_pos(ev.pos)
-		emit_signal("cursor_clicked", tilePos)
+	if ev.type == InputEvent.MOUSE_BUTTON && ev.is_action_pressed("left_click"):
+		#var tilePos = tile_at_pos(ev.pos)
+		#emit_signal("cursor_clicked", tilePos)
+		isMouseDown = true
+	elif ev.type == InputEvent.MOUSE_BUTTON && ev.is_action_released("left_click"):
+		isMouseDown = false
 
 func position_cursor(tilePos):
 	var cursorNode = get_node("MapCursor")
@@ -45,7 +63,8 @@ func connect_ui_signals():
 	uiNode.connect("speed_normal", self, "_set_speed_normal")
 	uiNode.connect("speed_fast", self, "_set_speed_fast")
 	uiNode.connect("speed_pause", self, "_set_speed_pause")
-	self.connect("cursor_clicked", self, "_reset_tile")
+	uiNode.connect("mode_change", self, "_set_mode")
+	self.connect("cursor_clicked", self, "_interact_tile")
 
 func _set_speed_normal():
 	simNode.clock.set_speed(1)
@@ -55,6 +74,12 @@ func _set_speed_fast():
 
 func _set_speed_pause():
 	simNode.clock.set_speed(0)
-	
-func _reset_tile(tilePos):
-	simNode.map.reset_tile(tilePos.x, tilePos.y)
+
+func _set_mode(m):
+	mode = m
+
+func _interact_tile(tilePos):
+	if mode == CURSOR_MODE.DIG:
+		simNode.map.reset_tile(tilePos.x, tilePos.y)
+	elif mode == CURSOR_MODE.PATH:
+		simNode.map.lay_path(tilePos.x, tilePos.y)
