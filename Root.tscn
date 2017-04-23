@@ -105,6 +105,24 @@ percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
 
+[node name="RatingLabel" type="Label" parent="UI"]
+
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 0
+margin/left = 10.0
+margin/top = 71.0
+margin/right = 246.0
+margin/bottom = 102.0
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+text = "Rating: 10.0"
+align = 1
+valign = 1
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
 [node name="TileLabel" type="Label" parent="UI"]
 
 focus/ignore_mouse = true
@@ -192,22 +210,21 @@ button/count = 4
 button/min_button_size = -1.0
 button/align = 4
 button/0/text = "Dig"
-button/0/tooltip = ""
+button/0/tooltip = "Remove top layer of plants and grass down to dirt"
 button/0/icon = null
 button/1/text = "Construct"
-button/1/tooltip = ""
+button/1/tooltip = "Lay tiles, plant plants, lay grass, etc"
 button/1/icon = null
-button/2/text = "Fill Water"
-button/2/tooltip = ""
+button/2/text = "Jobs"
+button/2/tooltip = "Hire people to do jobs you don't want to!"
 button/2/icon = null
 button/3/text = "Mow Lawn"
-button/3/tooltip = ""
+button/3/tooltip = "Chop down that unslightly tall grass"
 button/3/icon = null
 button/selected = 0
 
 [node name="ConstructionMenu" type="VButtonArray" parent="UI"]
 
-visibility/visible = false
 anchor/right = 1
 focus/ignore_mouse = false
 focus/stop_mouse = true
@@ -216,10 +233,10 @@ size_flags/vertical = 2
 margin/left = 12.0
 margin/top = 395.0
 margin/right = 8.0
-margin/bottom = 580.0
+margin/bottom = 613.0
 custom_constants/button_separator = 13
 flat = true
-button/count = 6
+button/count = 7
 button/min_button_size = -1.0
 button/align = 4
 button/0/text = "Path ($5)"
@@ -240,6 +257,34 @@ button/4/icon = null
 button/5/text = "Grass ($2)"
 button/5/tooltip = ""
 button/5/icon = null
+button/6/text = "Fill pond with dirt ($1)"
+button/6/tooltip = ""
+button/6/icon = null
+button/selected = 0
+
+[node name="JobMenu" type="VButtonArray" parent="UI"]
+
+visibility/visible = false
+anchor/right = 1
+focus/ignore_mouse = false
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 2
+margin/left = 12.0
+margin/top = 395.0
+margin/right = 8.0
+margin/bottom = 501.0
+custom_constants/button_separator = 13
+flat = true
+button/count = 2
+button/min_button_size = -1.0
+button/align = 4
+button/0/text = "None"
+button/0/tooltip = ""
+button/0/icon = null
+button/1/text = "Lawn Mower ($5/hour)"
+button/1/tooltip = ""
+button/1/icon = null
 button/selected = 0
 
 [connection signal="button_up" from="UI/NormalButton" to="UI" method="_on_NormalButton_button_up"]

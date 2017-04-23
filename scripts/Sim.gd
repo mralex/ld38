@@ -15,6 +15,15 @@ enum TILE_TYPES {
 	SOWN_DIRT,
 }
 
+const tile_prices = {
+	TILE_TYPES.CONCRETE: 5,
+	TILE_TYPES.ROSES: 5,
+	TILE_TYPES.DAFODILS: 5,
+	TILE_TYPES.ORCHIDS: 10,
+	TILE_TYPES.GRASS: 2,
+	TILE_TYPES.DIRT: 1,
+}
+
 class GameClock:
 	signal tick
 	var timeMultiplier = 1.0
@@ -57,6 +66,9 @@ class GameClock:
 		minutesLastTick = minutes
 		minutes = int(ticks / ticksPerMinute)
 
+	func is_tick_on_minute():
+		return ticks % ticksPerMinute == 0
+
 	func set_speed(speed):
 		print("set speed to %s" % speed)
 		if speed == 0:
@@ -73,6 +85,7 @@ class GameClock:
 const DEFAULT_GROWTH_RATE = 0.2
 const TALL_GRASS_BASE_HEIGHT = 75
 const FLOWER_GROWN_AMOUNT = 50
+const INITIAL_WATER_DISTANCE = 10000
 
 class GameTile:
 	var position = Vector2(0, 0)
@@ -90,6 +103,8 @@ class GameTile:
 	var age = -1
 
 	var distance_to_water = -1
+	
+	var surrounding_tiles = []
 
 	func _init(map, x, y, type):
 		self.map = map
@@ -100,85 +115,43 @@ class GameTile:
 		if added_at == -1:
 			added_at = clock.minutes
 			age = 0
-		else:
-			age = clock.minutes - added_at
 
-		if clock.minutes > clock.minutesLastTick:
+		if clock.is_tick_on_minute():
 			growth_amount += growth_rate
+			age += 1
 
 		update_water_proximity()
 
 		return
 
-		if clock.minutes > 0 && clock.minutes % 30 != 0:
-			return
-
-		var water = 0
-		var grass = 0
-		var tall_grass = 0
-		var surrounding = surrounding_tiles()
-
-		for tile in surrounding:
-			if tile == null:
-				continue
-
-			if tile.type == TILE_TYPES.GRASS:
-				grass += 1
-			if tile.type == TILE_TYPES.WATER:
-				water += 1
-			if tile.type == TILE_TYPES.TALL_GRASS:
-				tall_grass += 1
-
-		randomize()
-		# Dirt near water turns into grass
-		if type == TILE_TYPES.DIRT && water > 0 && randi() % 10 == 1:
-			set_type(TILE_TYPES.GRASS)
-		# Dirt near grass turns into grass
-		elif type == TILE_TYPES.DIRT && grass > 0 && randi() % 10 == 1:
-			set_type(TILE_TYPES.GRASS)
-
-		randomize()
-		var tall_grass_rate = 500
-		if tall_grass > 0:
-			tall_grass_rate = 50
-		if type == TILE_TYPES.GRASS && randi() % tall_grass_rate == 1:
-			type = TILE_TYPES.TALL_GRASS
-
 	func update_water_proximity():
-		var surrounding = surrounding_tiles()
-		var water = -1
+		var water = INITIAL_WATER_DISTANCE
 		var proximities = []
 
 		if type == TILE_TYPES.WATER:
 			distance_to_water = 0
 			return
 
-		for tile in surrounding:
+		for tile in surrounding_tiles:
 			if tile == null:
 				continue
 
 			if tile.type == TILE_TYPES.WATER:
-				water = 1
+				water = 0
 				break
 
-			if tile.distance_to_water > -1:
-				proximities.append(tile.distance_to_water)
+			if tile.distance_to_water > -1 && tile.distance_to_water < water:
+				water = tile.distance_to_water
 
-		if water == -1 && proximities.size() > 0:
-			water = proximities[0]
-			for i in range(1, proximities.size()):
-				water = min(water, proximities[i])
-
-			water += 1
-
-		if water != -1:
-			distance_to_water = water
+		if water != INITIAL_WATER_DISTANCE:
+			distance_to_water = water + 1
 
 	func set_type(type):
 		self.type = type
 		age = -1
 		added_at = -1
 		growth_amount = 0.0
+
 		if type == TILE_TYPES.WATER or type == TILE_TYPES.CONCRETE or type == TILE_TYPES.DIRT:
 			growth_rate = 0.0
 		else:
@@ -222,7 +195,7 @@ class GameTile:
 	func randomize_type():
 		type = randi() % 7 + 1
 
-	func surrounding_tiles():
+	func register_surrounding_tiles():
 		var surrounding = []
 		var x = position.x
 		var y = position.y
@@ -237,7 +210,7 @@ class GameTile:
 		surrounding[6] = self.map.get_tile(x, y - 1)
 		surrounding[7] = self.map.get_tile(x + 1, y - 1)
 
-		return surrounding
+		surrounding_tiles = surrounding
 
 	func mow():
 		type = TILE_TYPES.GRASS
@@ -248,6 +221,9 @@ class GameMap:
 	var width = 0
 	var height = 0
 	var tileMap
+	
+	var money = 1000.0
+	var rating = 5.0
 
 	func _init(width, height, tileMap):
 		self.width = width
@@ -275,7 +251,11 @@ class GameMap:
 
 				data[width * y + x] = GameTile.new(self, x, y, type)
 
+		for tile in data:
+			tile.register_surrounding_tiles()
+
 		refresh_entire_tile_map()
+		refresh_rating()
 
 	func _tick(clock):
 		# Update tiles every minute
@@ -316,15 +296,10 @@ class GameMap:
 		if not tile:
 			return
 
-		var type = tile.type
-
-		if type == TILE_TYPES.WATER:
+		if tile.type == TILE_TYPES.WATER:
 			return
 
-	#	if type == 0:
-	#		tile.type = 3
-	#	else:
-		tile.type = TILE_TYPES.DIRT
+		tile.set_type(TILE_TYPES.DIRT)
 
 	func lay_path(x, y):
 		var tile = get_tile(x, y)
@@ -363,6 +338,8 @@ class GameMap:
 			type = TILE_TYPES.DAFODILS
 		elif seed_type == 3:
 			type = TILE_TYPES.ORCHIDS
+			
+		money -= tile_prices[type]
 		tile.set_type(type)
 
 	func plant_grass(x, y):
@@ -374,6 +351,7 @@ class GameMap:
 		if tile.type != TILE_TYPES.DIRT:
 			return
 
+		money -= tile_prices[TILE_TYPES.GRASS]
 		tile.set_type(TILE_TYPES.GRASS)
 
 	func fill_water(x, y):
@@ -456,6 +434,10 @@ class GameMap:
 		stats["score"] = score * 10
 
 		return stats
+	
+	func refresh_rating():
+		var stats = rate_map()
+		rating = stats["score"]
 
 const mapSize = Vector2(32, 23)
 var clock
@@ -481,10 +463,5 @@ func _process(delta):
 func _tick():
 	map._tick(clock)
 
-	# Update a tile every 10 in-game minutes
-	if clock.minutes > lastTickUpdate && clock.minutes > 0 && clock.minutes % 10 == 0:
-		#map.update_randomly()
-		var stats = map.rate_map()
-
-		print(stats)
-		lastTickUpdate = clock.minutes
+	if clock.is_tick_on_minute() && clock.minutes > 0 && clock.minutes % 60 == 0:
+		map.refresh_rating()
