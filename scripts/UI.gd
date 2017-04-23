@@ -31,12 +31,13 @@ func _ready():
 
 	get_node("JudgeDialog").connect("confirmed", self, "_on_close_judge_popup")
 	get_node("IntroDialog").connect("confirmed", self, "_on_close_judge_popup")
+	get_node("IntroDialog").connect("popup_hide", self, "_on_close_judge_popup")
 	get_node("PauseDialog/ButtonGroup/ResumeButton").connect("button_up", self, "_on_resume_pause_popup")
 	get_node("PauseDialog/ButtonGroup/ExitMenuButton").connect("button_up", self, "_on_exit_main_pause_popup")
 	get_node("PauseDialog/ButtonGroup/ExitDesktopButton").connect("button_up", self, "_on_exit_desk_pause_popup")
-			
+
 	get_node("Menu").connect("button_selected", self, "_on_mode_button_selected")
-	
+
 	open_intro_dialog()
 
 func update_tile_label(tilePos):
@@ -78,7 +79,7 @@ func _tick():
 	update_money()
 	update_rating(simNode.map.rating)
 	check_judge()
-	
+
 	if get_node("IntroDialog").is_visible():
 		emit_signal("speed_pause")
 
@@ -87,7 +88,7 @@ func _on_mode_button_selected(index):
 		constructionUI.show()
 	else:
 		constructionUI.hide()
-	
+
 	if index == 2:
 		jobUI.show()
 	else:
@@ -115,7 +116,7 @@ func check_judge():
 		# Show judgement every day
 		var rating = simNode.map.rate_map()
 		var award = simNode.map.award_prize_money(rating)
-		
+
 		var judgementPopup = get_node("JudgeDialog")
 		judgementPopup.set_text("The neighbours think your garden is pretty nice. Keep up the good work!\n\nYou've been awarded $%.2f" % award)
 		judgementPopup.popup_centered()
@@ -140,6 +141,6 @@ func _on_resume_pause_popup():
 
 func _on_exit_desk_pause_popup():
 	get_tree().quit()
-	
+
 func _on_exit_main_pause_popup():
 	get_tree().change_scene("res://Intro.tscn")

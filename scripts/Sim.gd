@@ -109,7 +109,7 @@ class GameTile:
 	var age = -1
 
 	var distance_to_water = -1
-	
+
 	var surrounding_tiles = []
 
 	func _init(map, x, y, type):
@@ -135,7 +135,7 @@ class GameTile:
 				var tile = surrounding_tiles[randi() % 8]
 				if tile != null && tile.type == TILE_TYPES.GRASS:
 					tile.set_type(TILE_TYPES.WEEDS)
-				
+
 		update_water_proximity()
 
 		return
@@ -167,7 +167,7 @@ class GameTile:
 		age = -1
 		added_at = -1
 		growth_amount = 0.0
-		
+
 		var base_growth_rate = 0
 		var growth_rate_mod = 6
 
@@ -176,7 +176,7 @@ class GameTile:
 			growth_rate_mod = 24
 		elif type == TILE_TYPES.ROSES || type == TILE_TYPES.DAFODILS || type == TILE_TYPES.ORCHIDS:
 			base_growth_rate = BASE_FLOWER_GROWTH_RATE
-			
+
 		growth_rate = base_growth_rate + (randf() / growth_rate_mod) * 0.5
 
 	func get_sprite():
@@ -243,7 +243,7 @@ class GameMap:
 	var width = 0
 	var height = 0
 	var tileMap
-	
+
 	var money = 1000.0
 	var rating = 5.0
 
@@ -360,7 +360,7 @@ class GameMap:
 			type = TILE_TYPES.DAFODILS
 		elif seed_type == 3:
 			type = TILE_TYPES.ORCHIDS
-			
+
 		money -= tile_prices[type]
 		tile.set_type(type)
 
@@ -423,7 +423,7 @@ class GameMap:
 
 		if stats["shaggy"] > 0:
 			grass_score -= 2
-		
+
 		if stats[TILE_TYPES.WEEDS] > 2:
 			grass_score -= 3
 
@@ -446,7 +446,7 @@ class GameMap:
 		var flowers_score = 0
 		if flowers_percent > 0:
 			flowers_score = 1
-			
+
 			if flowers_percent > 0.2:
 				flowers_score = 4
 			if flowers_percent > 0.5:
@@ -466,11 +466,11 @@ class GameMap:
 		stats["score"] = score * 10
 
 		return stats
-	
+
 	func refresh_rating():
 		var stats = rate_map()
 		rating = stats["score"]
-	
+
 	func award_prize_money(stats):
 		var award = stats["score_float"] * BASE_AWARD_MONEY
 		money += award

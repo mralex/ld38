@@ -15,7 +15,7 @@ lossy_quality = 0.7
 transform/pos = Vector2( 1547.66, 0 )
 transform/scale = Vector2( 32, 32 )
 texture = SubResource( 1 )
-modulate = Color( 0.246094, 0.138533, 0.0240326, 0.967216 )
+modulate = Color( 0.332031, 0.181255, 0.020752, 0.967216 )
 region = true
 region_rect = Rect2( 0, 0, 32, 32 )
 

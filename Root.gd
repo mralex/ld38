@@ -82,7 +82,7 @@ func _input(ev):
 		isMouseDown = true
 	elif ev.type == InputEvent.MOUSE_BUTTON && ev.is_action_released("left_click"):
 		isMouseDown = false
-	
+
 	if ev.is_action_released("ui_toggle_pause"):
 		if is_paused:
 			simNode.clock.set_speed(1)
@@ -90,7 +90,7 @@ func _input(ev):
 		else:
 			simNode.clock.set_speed(0)
 			is_paused = true
-	
+
 	if ev.is_action_released("ui_escape"):
 		if is_pause_menu:
 			uiNode.hide_pause_dialog()
