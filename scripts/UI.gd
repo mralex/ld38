@@ -20,28 +20,29 @@ func _ready():
 	# Initialization here
 	rootNode = get_parent()
 	rootNode.connect("cursor_update", self, "_cursor_updated")
-	
+
 	simNode = get_node("../SimNode")
 	simNode.clock.connect("tick", self, "_tick")
-	
+
 	constructionUI = get_node("ConstructionMenu")
 	constructionUI.connect("button_selected", self, "_on_construction_button_selected")
-	
+
 	get_node("Menu").connect("button_selected", self, "_on_mode_button_selected")
 
 func update_tile_label(tilePos):
 	var tileLabel = get_node("TileLabel")
 	var tile = simNode.map.get_tile(tilePos.x, tilePos.y)
-	
+
 	if tile == null:
+		tileLabel.set_text("")
 		return
 
-	tileLabel.set_text("(%s,%s)\n%s" % [tilePos.x, tilePos.y, tile.type_string()])
+	tileLabel.set_text("(%s,%s)\n%s (Age: %s)\n(Growth rate: %s)\n(Growth amount: %s)" % [tilePos.x, tilePos.y, tile.type_string(), tile.age, tile.growth_rate, tile.growth_amount])
 
 func _cursor_updated(tilePos):
 	if tilePos.x < 0 or tilePos.y < 0 or tilePos.x > simNode.map.width - 1 or tilePos.y > simNode.map.height - 1:
 		return
-	
+
 	update_tile_label(tilePos)
 
 func update_date_time(minutes):
@@ -49,13 +50,13 @@ func update_date_time(minutes):
 
 	var hours = minutes / 60
 	var days = hours / 24 + 1
-	var years = days / 364 + 1 
+	var years = days / 364 + 1
 
 	timeLabel.set_text("Year: %s, Day: %s, %s:%s" % [years, days % 365, hours % 24, minutes % 60])
 
 func update_money():
 	var moneyLabel = get_node("MoneyLabel")
-	
+
 	moneyLabel.set_text("$25")
 
 func _tick():

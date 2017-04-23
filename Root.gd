@@ -39,9 +39,9 @@ var construction_mode = CONSTRUCTION_MODE.PATH
 func _ready():
 	simNode = get_node("SimNode")
 	uiNode = get_node("UI")
-	
+
 	connect_ui_signals()
-	
+
 	set_fixed_process(true)
 	set_process_input(true)
 
@@ -51,18 +51,22 @@ func tile_at_pos(position):
 	if position.x <= 1024:
 		# Figure out which tile we're over
 		tilePos = Vector2(floor(position.x / 32), floor(position.y / 32))
-	
+	else:
+		return null
+
 	return tilePos
 
 func _fixed_process(delta):
 	var position = get_viewport().get_mouse_pos()
 	var tilePos = tile_at_pos(position)
-	
+
 	position_cursor(tilePos)
-	emit_signal("cursor_update", tilePos)
-	
-	if isMouseDown:
-		emit_signal("cursor_clicked", tilePos)
+
+	if tilePos != null:
+		emit_signal("cursor_update", tilePos)
+
+		if isMouseDown:
+			emit_signal("cursor_clicked", tilePos)
 
 func _input(ev):
 	if ev.type == InputEvent.MOUSE_BUTTON && ev.is_action_pressed("left_click"):
@@ -74,8 +78,12 @@ func _input(ev):
 
 func position_cursor(tilePos):
 	var cursorNode = get_node("MapCursor")
-	
-	cursorNode.set_pos(tilePos * 32)
+
+	if tilePos == null:
+		cursorNode.hide()
+	else:
+		cursorNode.show()
+		cursorNode.set_pos(tilePos * 32)
 
 func connect_ui_signals():
 	uiNode.connect("speed_normal", self, "_set_speed_normal")
@@ -96,7 +104,7 @@ func _set_speed_pause():
 
 func _set_mode(m):
 	mode = m
-	
+
 func _set_construction_mode(m):
 	construction_mode = m
 
