@@ -39,6 +39,10 @@ var mode = CURSOR_MODE.DIG
 var construction_mode = CONSTRUCTION_MODE.PATH
 var judged = false
 
+var is_paused = false
+var last_game_speed = 1
+var is_pause_menu = false
+
 func _ready():
 	simNode = get_node("SimNode")
 	uiNode = get_node("UI")
@@ -78,6 +82,26 @@ func _input(ev):
 		isMouseDown = true
 	elif ev.type == InputEvent.MOUSE_BUTTON && ev.is_action_released("left_click"):
 		isMouseDown = false
+	
+	if ev.is_action_released("ui_toggle_pause"):
+		if is_paused:
+			simNode.clock.set_speed(1)
+			is_paused = false
+		else:
+			simNode.clock.set_speed(0)
+			is_paused = true
+	
+	if ev.is_action_released("ui_escape"):
+		if is_pause_menu:
+			uiNode.hide_pause_dialog()
+			is_pause_menu = false
+		else:
+			simNode.clock.set_speed(0)
+			uiNode.open_pause_dialog()
+			is_pause_menu = true
+
+func _resume_from_pause():
+	simNode.clock.set_speed(1)
 
 func position_cursor(tilePos):
 	var cursorNode = get_node("MapCursor")
@@ -93,16 +117,26 @@ func connect_ui_signals():
 	uiNode.connect("speed_fast", self, "_set_speed_fast")
 	uiNode.connect("speed_pause", self, "_set_speed_pause")
 	uiNode.connect("mode_change", self, "_set_mode")
+	uiNode.connect("resume_game", self, "_resume_from_pause")
 	uiNode.connect("construction_mode_change", self, "_set_construction_mode")
 	self.connect("cursor_clicked", self, "_interact_tile")
 
 func _set_speed_normal():
+	if is_paused:
+		return
+
 	simNode.clock.set_speed(1)
 
 func _set_speed_fast():
+	if is_paused:
+		return
+
 	simNode.clock.set_speed(2)
 
 func _set_speed_pause():
+	if is_paused:
+		return
+
 	simNode.clock.set_speed(0)
 
 func _set_mode(m):

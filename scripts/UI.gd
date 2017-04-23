@@ -9,6 +9,7 @@ var jobUI
 signal speed_normal
 signal speed_fast
 signal speed_pause
+signal resume_game
 signal mode_change
 signal construction_mode_change
 signal job_mode_change
@@ -29,7 +30,10 @@ func _ready():
 	jobUI.connect("button_selected", self, "_on_job_button_selected")
 
 	get_node("JudgeDialog").connect("confirmed", self, "_on_close_judge_popup")
-
+	get_node("PauseDialog/ButtonGroup/ResumeButton").connect("button_up", self, "_on_resume_pause_popup")
+	get_node("PauseDialog/ButtonGroup/ExitMenuButton").connect("button_up", self, "_on_exit_main_pause_popup")
+	get_node("PauseDialog/ButtonGroup/ExitDesktopButton").connect("button_up", self, "_on_exit_desk_pause_popup")
+			
 	get_node("Menu").connect("button_selected", self, "_on_mode_button_selected")
 
 func update_tile_label(tilePos):
@@ -113,3 +117,20 @@ func check_judge():
 
 func _on_close_judge_popup():
 	emit_signal("speed_normal")
+
+func open_pause_dialog():
+	var pauseDialog = get_node("PauseDialog")
+	pauseDialog.popup_centered()
+
+func hide_pause_dialog():
+	_on_resume_pause_popup()
+
+func _on_resume_pause_popup():
+	get_node("PauseDialog").hide()
+	emit_signal("resume_game")
+
+func _on_exit_desk_pause_popup():
+	get_tree().quit()
+	
+func _on_exit_main_pause_popup():
+	get_tree().change_scene("res://Intro.tscn")

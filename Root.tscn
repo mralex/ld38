@@ -69,6 +69,81 @@ popup/exclusive = false
 window/title = "Judgement"
 dialog/hide_on_ok = true
 
+[node name="PauseDialog" type="PopupDialog" parent="UI"]
+
+focus/ignore_mouse = false
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 2
+margin/left = -589.0
+margin/top = 190.0
+margin/right = -249.0
+margin/bottom = 437.0
+popup/exclusive = false
+
+[node name="ButtonGroup" type="ButtonGroup" parent="UI/PauseDialog"]
+
+focus/ignore_mouse = false
+focus/stop_mouse = false
+size_flags/horizontal = 2
+size_flags/vertical = 2
+margin/left = 90.0
+margin/top = 43.0
+margin/right = 250.0
+margin/bottom = 202.0
+alignment = 0
+
+[node name="ResumeButton" type="Button" parent="UI/PauseDialog/ButtonGroup"]
+
+focus/ignore_mouse = false
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 3
+margin/left = 0.0
+margin/top = 0.0
+margin/right = 160.0
+margin/bottom = 53.0
+toggle_mode = true
+click_on_press = true
+enabled_focus_mode = 0
+shortcut = null
+text = "Resume"
+flat = false
+
+[node name="ExitMenuButton" type="Button" parent="UI/PauseDialog/ButtonGroup"]
+
+focus/ignore_mouse = false
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 3
+margin/left = 0.0
+margin/top = 53.0
+margin/right = 160.0
+margin/bottom = 106.0
+toggle_mode = true
+click_on_press = true
+enabled_focus_mode = 0
+shortcut = null
+text = "Quit To Menu"
+flat = false
+
+[node name="ExitDesktopButton" type="Button" parent="UI/PauseDialog/ButtonGroup"]
+
+focus/ignore_mouse = false
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 3
+margin/left = 0.0
+margin/top = 106.0
+margin/right = 160.0
+margin/bottom = 159.0
+toggle_mode = true
+click_on_press = true
+enabled_focus_mode = 0
+shortcut = null
+text = "Quit To Desktop"
+flat = false
+
 [node name="DateLabel" type="Label" parent="UI"]
 
 focus/ignore_mouse = true
@@ -152,9 +227,9 @@ margin/left = 10.0
 margin/top = 690.0
 margin/right = 69.0
 margin/bottom = 710.0
-toggle_mode = true
+toggle_mode = false
 click_on_press = true
-enabled_focus_mode = 2
+enabled_focus_mode = 0
 shortcut = null
 text = "Normal"
 flat = false
@@ -169,9 +244,9 @@ margin/left = 94.0
 margin/top = 690.0
 margin/right = 153.0
 margin/bottom = 710.0
-toggle_mode = true
+toggle_mode = false
 click_on_press = true
-enabled_focus_mode = 2
+enabled_focus_mode = 0
 shortcut = null
 text = "Fast"
 flat = false
@@ -186,9 +261,9 @@ margin/left = 180.0
 margin/top = 690.0
 margin/right = 239.0
 margin/bottom = 710.0
-toggle_mode = true
+toggle_mode = false
 click_on_press = true
-enabled_focus_mode = 2
+enabled_focus_mode = 0
 shortcut = null
 text = "Pause"
 flat = false
