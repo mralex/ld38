@@ -48,7 +48,7 @@ func update_tile_label(tilePos):
 		tileLabel.set_text("")
 		return
 
-	tileLabel.set_text("(%s,%s)\n%s (Age: %s)\n(Growth rate: %.2f)\n(Growth amount: %.2f)\n(Distance to water: %d)" % [tilePos.x, tilePos.y, tile.type_string(), tile.age, tile.growth_rate, tile.growth_amount, tile.distance_to_water])
+	tileLabel.set_text("(%s,%s)\n%s (Age: %s)\n(Growth rate: %.2f)\n(Growth amount: %.2f)" % [tilePos.x, tilePos.y, tile.type_string(), tile.age, tile.growth_rate, tile.growth_amount])
 
 func _cursor_updated(tilePos):
 	if tilePos.x < 0 or tilePos.y < 0 or tilePos.x > simNode.map.width - 1 or tilePos.y > simNode.map.height - 1:

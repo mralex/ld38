@@ -33,6 +33,9 @@ const INITIAL_WATER_DISTANCE = 10000
 
 const TICKS_PER_MINUTE = 10
 
+const AUTO_MOWER_TILES_PER_TICK = 1
+const AUTO_MOWER_COST_PER_HOUR = 12
+
 # 6am
 const START_TIME = TICKS_PER_MINUTE * 60 * 6
 
@@ -122,11 +125,11 @@ class GameTile:
 			added_at = clock.minutes
 			age = 0
 
-		if clock.is_tick_on_minute():
-			growth_amount += growth_rate
-			age += 1
 
-		if clock.is_tick_on_minute() && clock.minutes % 60 == 0:
+		growth_amount += growth_rate
+		age += 1
+
+		if clock.minutes % 60 == 0:
 			if type == TILE_TYPES.GRASS && age > 60 && randi() % 1000 == 1:
 				set_type(TILE_TYPES.WEEDS)
 			elif type == TILE_TYPES.WEEDS && randi() % 50 == 1:
@@ -136,7 +139,8 @@ class GameTile:
 				if tile != null && tile.type == TILE_TYPES.GRASS:
 					tile.set_type(TILE_TYPES.WEEDS)
 
-		update_water_proximity()
+		# Water usage isn't implemented, so this call is useless.
+		# update_water_proximity()
 
 		return
 
@@ -247,6 +251,8 @@ class GameMap:
 	var money = 1000.0
 	var rating = 5.0
 
+	var _is_mower_active = false
+
 	func _init(width, height, tileMap):
 		self.width = width
 		self.height = height
@@ -281,9 +287,12 @@ class GameMap:
 
 	func _tick(clock):
 		# Update tiles every minute
-		if clock.ticks % clock.ticksPerMinute == 0:
+		if clock.is_tick_on_minute():
 			for cell in data:
 				cell._tick(clock)
+
+			if _is_mower_active && money > AUTO_MOWER_COST_PER_HOUR:
+				auto_mow_grass(clock)
 
 	func update_randomly():
 		var x = randi() % self.width
@@ -343,6 +352,23 @@ class GameMap:
 
 		if tile.type == TILE_TYPES.GRASS:
 			tile.mow()
+
+	func auto_mow_grass(clock):
+		var grass_tiles = []
+		for tile in data:
+			if tile.type == TILE_TYPES.GRASS:
+				grass_tiles.append(tile)
+
+		if grass_tiles.size() == 0:
+			return
+
+		var size = grass_tiles.size()
+		for i in range(AUTO_MOWER_TILES_PER_TICK):
+			var tile = grass_tiles[randi() % size]
+			tile.mow()
+
+		if clock.is_tick_on_minute() && clock.minutes % 60 == 0:
+			money -= AUTO_MOWER_COST_PER_HOUR
 
 	func plant_seeds(x, y, seed_type):
 		var tile = get_tile(x, y)

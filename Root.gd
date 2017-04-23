@@ -119,6 +119,7 @@ func connect_ui_signals():
 	uiNode.connect("mode_change", self, "_set_mode")
 	uiNode.connect("resume_game", self, "_resume_from_pause")
 	uiNode.connect("construction_mode_change", self, "_set_construction_mode")
+	uiNode.connect("job_mode_change", self, "_set_job_mode")
 	self.connect("cursor_clicked", self, "_interact_tile")
 
 func _set_speed_normal():
@@ -144,6 +145,12 @@ func _set_mode(m):
 
 func _set_construction_mode(m):
 	construction_mode = m
+
+func _set_job_mode(m):
+	if m == 0:
+		simNode.map._is_mower_active = false
+	else:
+		simNode.map._is_mower_active = true
 
 func _interact_tile(tilePos):
 	if mode == CURSOR_MODE.DIG:
