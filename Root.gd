@@ -5,6 +5,7 @@ signal cursor_clicked
 
 var simNode
 var uiNode
+var judgePopupNode
 
 var isMouseDown = false
 
@@ -35,6 +36,7 @@ enum CONSTRUCTION_MODE {
 
 var mode = CURSOR_MODE.DIG
 var construction_mode = CONSTRUCTION_MODE.PATH
+var judged = false
 
 func _ready():
 	simNode = get_node("SimNode")
@@ -115,10 +117,22 @@ func _interact_tile(tilePos):
 		_construct_tile(tilePos)
 	elif mode == CURSOR_MODE.MOW_GRASS:
 		simNode.map.mow_grass(tilePos.x, tilePos.y)
+	elif mode == CURSOR_MODE.FILL_WATER:
+		simNode.map.fill_water(tilePos.x, tilePos.y)
 
 func _construct_tile(tilePos):
 	if construction_mode == CONSTRUCTION_MODE.PATH:
 		simNode.map.lay_path(tilePos.x, tilePos.y)
 	elif construction_mode == CONSTRUCTION_MODE.ROSES:
 		# FIXME: Add seed type to this
-		simNode.map.plant_seeds(tilePos.x, tilePos.y)
+		simNode.map.plant_seeds(tilePos.x, tilePos.y, 1)
+	elif construction_mode == CONSTRUCTION_MODE.DAFODILS:
+		# FIXME: Add seed type to this
+		simNode.map.plant_seeds(tilePos.x, tilePos.y, 2)
+	elif construction_mode == CONSTRUCTION_MODE.ORCHIDS:
+		# FIXME: Add seed type to this
+		simNode.map.plant_seeds(tilePos.x, tilePos.y, 3)
+	elif construction_mode == CONSTRUCTION_MODE.GRASS:
+		# FIXME: Add seed type to this
+		simNode.map.plant_grass(tilePos.x, tilePos.y)
+

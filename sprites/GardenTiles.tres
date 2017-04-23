@@ -91,4 +91,13 @@ lossy_quality = 0.7
 8/navigation_offset = Vector2( 16, 16 )
 8/shape_offset = Vector2( 0, 0 )
 8/shapes = [  ]
+9/name = "Sown"
+9/texture = SubResource( 1 )
+9/tex_offset = Vector2( 0, 0 )
+9/modulate = Color( 0.148438, 0.0846829, 0.0168152, 0.967216 )
+9/region = Rect2( 0, 0, 32, 32 )
+9/occluder_offset = Vector2( 16, 16 )
+9/navigation_offset = Vector2( 16, 16 )
+9/shape_offset = Vector2( 0, 0 )
+9/shapes = [  ]
 

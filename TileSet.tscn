@@ -92,4 +92,13 @@ modulate = Color( 0.494485, 0.607843, 0.027451, 1 )
 region = true
 region_rect = Rect2( 0, 0, 32, 32 )
 
+[node name="Sown" type="Sprite" parent="."]
+
+transform/pos = Vector2( 1547.66, 1481.48 )
+transform/scale = Vector2( 32, 32 )
+texture = SubResource( 1 )
+modulate = Color( 0.148438, 0.0846829, 0.0168152, 0.967216 )
+region = true
+region_rect = Rect2( 0, 0, 32, 32 )
+
 

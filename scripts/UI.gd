@@ -37,7 +37,7 @@ func update_tile_label(tilePos):
 		tileLabel.set_text("")
 		return
 
-	tileLabel.set_text("(%s,%s)\n%s (Age: %s)\n(Growth rate: %s)\n(Growth amount: %s)" % [tilePos.x, tilePos.y, tile.type_string(), tile.age, tile.growth_rate, tile.growth_amount])
+	tileLabel.set_text("(%s,%s)\n%s (Age: %s)\n(Growth rate: %s)\n(Growth amount: %s)\n(Distance to water: %s)" % [tilePos.x, tilePos.y, tile.type_string(), tile.age, tile.growth_rate, tile.growth_amount, tile.distance_to_water])
 
 func _cursor_updated(tilePos):
 	if tilePos.x < 0 or tilePos.y < 0 or tilePos.x > simNode.map.width - 1 or tilePos.y > simNode.map.height - 1:
@@ -62,6 +62,7 @@ func update_money():
 func _tick():
 	update_date_time(simNode.clock.minutes)
 	update_money()
+	check_judge()
 
 func _on_mode_button_selected(index):
 	if index == 1:
@@ -82,3 +83,15 @@ func _on_FastButton_button_up():
 
 func _on_PauseButton_button_up():
 	emit_signal("speed_pause")
+
+func check_judge():
+	if simNode.clock.ticks > 0 && simNode.clock.ticks % simNode.clock.ticksPerDay == 0:
+		# Show judgement every day
+		var judgementPopup = get_node("JudgeDialog")
+		judgementPopup.set_text("The neighbours think your garden is pretty nice. Keep up the good work!")
+		judgementPopup.connect("confirmed", self, "_on_close_judge_popup")
+		judgementPopup.popup_centered()
+		emit_signal("speed_pause")
+
+func _on_close_judge_popup():
+	emit_signal("speed_normal")
