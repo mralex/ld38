@@ -83,6 +83,8 @@ region_rect = Rect2( 0, 0, 32, 32 )
 
 [node name="TallGrass" type="Sprite" parent="."]
 
+visibility/opacity = 0.5
+visibility/self_opacity = 0.5
 transform/pos = Vector2( 0, 2968.17 )
 transform/scale = Vector2( 32, 32 )
 texture = SubResource( 1 )

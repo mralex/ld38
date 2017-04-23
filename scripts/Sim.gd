@@ -68,6 +68,15 @@ class GameTile:
 	var type = TILE_TYPES.DIRT
 	var map
 	
+	var growth_rate = 0
+	var growth_amount = 0.5
+	
+	# minutes since epoch
+	var added_at = -1
+	
+	# minutes since planting
+	var age = -1
+	
 	func _init(map, x, y, type):
 		self.map = map
 		self.type = type
@@ -137,14 +146,16 @@ class GameTile:
 		var surrounding = []
 		var x = position.x
 		var y = position.y
-		surrounding.append(self.map.get_tile(x + 1, y))
-		surrounding.append(self.map.get_tile(x + 1, y + 1))
-		surrounding.append(self.map.get_tile(x, y + 1))
-		surrounding.append(self.map.get_tile(x - 1, y + 1))
-		surrounding.append(self.map.get_tile(x - 1, y))
-		surrounding.append(self.map.get_tile(x - 1, y - 1))
-		surrounding.append(self.map.get_tile(x, y - 1))
-		surrounding.append(self.map.get_tile(x + 1, y - 1))
+		
+		surrounding.resize(8)
+		surrounding[0] = self.map.get_tile(x + 1, y)
+		surrounding[1] = self.map.get_tile(x + 1, y + 1)
+		surrounding[2] = self.map.get_tile(x, y + 1)
+		surrounding[3] = self.map.get_tile(x - 1, y + 1)
+		surrounding[4] = self.map.get_tile(x - 1, y)
+		surrounding[5] = self.map.get_tile(x - 1, y - 1)
+		surrounding[6] = self.map.get_tile(x, y - 1)
+		surrounding[7] = self.map.get_tile(x + 1, y - 1)
 		
 		return surrounding
 
@@ -248,6 +259,18 @@ class GameMap:
 			
 		# Can only place path on solid ground, not water
 		tile.type = TILE_TYPES.GRASS
+	
+	func plant_seeds(x, y):
+		var tile = get_tile(x, y)
+		
+		if not tile:
+			return
+		
+		if tile.type != TILE_TYPES.DIRT:
+			return
+		
+		# Only plan seeds in dirt
+		tile.type = TILE_TYPES.ROSES
 	
 const mapSize = Vector2(32, 22)
 var clock

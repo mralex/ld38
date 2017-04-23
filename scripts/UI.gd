@@ -7,10 +7,13 @@ extends Panel
 var simNode
 var rootNode
 
+var constructionUI
+
 signal speed_normal
 signal speed_fast
 signal speed_pause
 signal mode_change
+signal construction_mode_change
 
 func _ready():
 	# Called every time the node is added to the scene.
@@ -21,7 +24,10 @@ func _ready():
 	simNode = get_node("../SimNode")
 	simNode.clock.connect("tick", self, "_tick")
 	
-	get_node("VButtonArray").connect("button_selected", self, "_on_mode_button_selected")
+	constructionUI = get_node("ConstructionMenu")
+	constructionUI.connect("button_selected", self, "_on_construction_button_selected")
+	
+	get_node("Menu").connect("button_selected", self, "_on_mode_button_selected")
 
 func update_tile_label(tilePos):
 	var tileLabel = get_node("TileLabel")
@@ -57,7 +63,15 @@ func _tick():
 	update_money()
 
 func _on_mode_button_selected(index):
+	if index == 1:
+		constructionUI.show()
+	else:
+		constructionUI.hide()
+
 	emit_signal("mode_change", index)
+
+func _on_construction_button_selected(index):
+	emit_signal("construction_mode_change", index)
 
 func _on_NormalButton_button_up():
 	emit_signal("speed_normal")

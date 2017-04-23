@@ -8,7 +8,7 @@ var uiNode
 
 var isMouseDown = false
 
-enum CURSOR_MODE {
+enum CURSOR_MODE1 {
 	DIG,
 	PATH,
 	PLANT,
@@ -17,7 +17,24 @@ enum CURSOR_MODE {
 	MOW_GRASS,
 }
 
+enum CURSOR_MODE {
+	DIG,
+	CONSTRUCT,
+	FILL_WATER,
+	MOW_GRASS,
+}
+
+enum CONSTRUCTION_MODE {
+	PATH,
+	FENCE,
+	ROSES,
+	DAFODILS,
+	ORCHIDS,
+	GRASS,
+}
+
 var mode = CURSOR_MODE.DIG
+var construction_mode = CONSTRUCTION_MODE.PATH
 
 func _ready():
 	simNode = get_node("SimNode")
@@ -65,6 +82,7 @@ func connect_ui_signals():
 	uiNode.connect("speed_fast", self, "_set_speed_fast")
 	uiNode.connect("speed_pause", self, "_set_speed_pause")
 	uiNode.connect("mode_change", self, "_set_mode")
+	uiNode.connect("construction_mode_change", self, "_set_construction_mode")
 	self.connect("cursor_clicked", self, "_interact_tile")
 
 func _set_speed_normal():
@@ -78,11 +96,21 @@ func _set_speed_pause():
 
 func _set_mode(m):
 	mode = m
+	
+func _set_construction_mode(m):
+	construction_mode = m
 
 func _interact_tile(tilePos):
 	if mode == CURSOR_MODE.DIG:
 		simNode.map.reset_tile(tilePos.x, tilePos.y)
-	elif mode == CURSOR_MODE.PATH:
-		simNode.map.lay_path(tilePos.x, tilePos.y)
+	elif mode == CURSOR_MODE.CONSTRUCT:
+		_construct_tile(tilePos)
 	elif mode == CURSOR_MODE.MOW_GRASS:
 		simNode.map.mow_grass(tilePos.x, tilePos.y)
+
+func _construct_tile(tilePos):
+	if construction_mode == CONSTRUCTION_MODE.PATH:
+		simNode.map.lay_path(tilePos.x, tilePos.y)
+	elif construction_mode == CONSTRUCTION_MODE.ROSES:
+		# FIXME: Add seed type to this
+		simNode.map.plant_seeds(tilePos.x, tilePos.y)
