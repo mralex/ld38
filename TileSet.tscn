@@ -32,7 +32,7 @@ region_rect = Rect2( 0, 0, 32, 32 )
 transform/pos = Vector2( 0, 1433.68 )
 transform/scale = Vector2( 32, 32 )
 texture = SubResource( 1 )
-modulate = Color( 0.139167, 0.238281, 0.0195465, 1 )
+modulate = Color( 0.0105743, 0.386719, 0.131058, 1 )
 region = true
 region_rect = Rect2( 0, 0, 32, 32 )
 
