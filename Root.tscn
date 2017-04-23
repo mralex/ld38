@@ -365,6 +365,33 @@ button/1/tooltip = ""
 button/1/icon = null
 button/selected = 0
 
+[node name="IntroDialog" type="AcceptDialog" parent="UI"]
+
+focus/ignore_mouse = false
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 2
+margin/left = -660.0
+margin/top = 221.0
+margin/right = -52.0
+margin/bottom = 483.0
+popup/exclusive = false
+window/title = "Welcome"
+dialog/text = "Welcome to your lovely new country garden. As a member of this community it is up to you,
+and you alone, to keep your garden well maintained.
+
+- It should be free of weeds, and unsightly tall grass at all times.
+
+- Uncovered dirt must be kept to a minimum.
+
+- And always, a beautiful arrangement of appropriate flowers is very much encouraged.
+
+Every morning a representative of the home-owners community will give you a report, 
+and a commensurate amount of award money for your hard work.
+
+Good luck!"
+dialog/hide_on_ok = true
+
 [connection signal="button_up" from="UI/NormalButton" to="UI" method="_on_NormalButton_button_up"]
 
 [connection signal="button_up" from="UI/FastButton" to="UI" method="_on_FastButton_button_up"]

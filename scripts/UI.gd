@@ -30,11 +30,14 @@ func _ready():
 	jobUI.connect("button_selected", self, "_on_job_button_selected")
 
 	get_node("JudgeDialog").connect("confirmed", self, "_on_close_judge_popup")
+	get_node("IntroDialog").connect("confirmed", self, "_on_close_judge_popup")
 	get_node("PauseDialog/ButtonGroup/ResumeButton").connect("button_up", self, "_on_resume_pause_popup")
 	get_node("PauseDialog/ButtonGroup/ExitMenuButton").connect("button_up", self, "_on_exit_main_pause_popup")
 	get_node("PauseDialog/ButtonGroup/ExitDesktopButton").connect("button_up", self, "_on_exit_desk_pause_popup")
 			
 	get_node("Menu").connect("button_selected", self, "_on_mode_button_selected")
+	
+	open_intro_dialog()
 
 func update_tile_label(tilePos):
 	var tileLabel = get_node("TileLabel")
@@ -75,6 +78,9 @@ func _tick():
 	update_money()
 	update_rating(simNode.map.rating)
 	check_judge()
+	
+	if get_node("IntroDialog").is_visible():
+		emit_signal("speed_pause")
 
 func _on_mode_button_selected(index):
 	if index == 1:
@@ -117,6 +123,9 @@ func check_judge():
 
 func _on_close_judge_popup():
 	emit_signal("speed_normal")
+
+func open_intro_dialog():
+	get_node("IntroDialog").popup_centered()
 
 func open_pause_dialog():
 	var pauseDialog = get_node("PauseDialog")
