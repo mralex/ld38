@@ -126,6 +126,15 @@ class GameTile:
 			growth_amount += growth_rate
 			age += 1
 
+		if clock.is_tick_on_minute() && clock.minutes % 60 == 0:
+			if type == TILE_TYPES.GRASS && age > 60 && randi() % 1000 == 1:
+				set_type(TILE_TYPES.WEEDS)
+			elif type == TILE_TYPES.WEEDS && randi() % 300 == 1:
+				# Set a surrounding tile to weed if we're a weed
+				var tile = surrounding_tiles[randi() % 8]
+				if tile != null && tile.type == TILE_TYPES.GRASS:
+					tile.set_type(TILE_TYPES.WEEDS)
+				
 		update_water_proximity()
 
 		return
@@ -410,8 +419,11 @@ class GameMap:
 
 		if stats["shaggy"] > 0:
 			grass_score -= 2
+		
+		if stats[TILE_TYPES.WEEDS] > 2:
+			grass_score -= 3
 
-		var shaggy_percent = float(stats["shaggy"]) / size
+		var shaggy_percent = float(stats["shaggy"] + stats[TILE_TYPES.WEEDS]) / size
 		var shaggy_score = 4
 		if shaggy_percent > 0.3:
 			shaggy_score = 0
