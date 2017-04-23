@@ -129,8 +129,9 @@ class GameTile:
 		if clock.is_tick_on_minute() && clock.minutes % 60 == 0:
 			if type == TILE_TYPES.GRASS && age > 60 && randi() % 1000 == 1:
 				set_type(TILE_TYPES.WEEDS)
-			elif type == TILE_TYPES.WEEDS && randi() % 300 == 1:
+			elif type == TILE_TYPES.WEEDS && randi() % 50 == 1:
 				# Set a surrounding tile to weed if we're a weed
+				randomize()
 				var tile = surrounding_tiles[randi() % 8]
 				if tile != null && tile.type == TILE_TYPES.GRASS:
 					tile.set_type(TILE_TYPES.WEEDS)
@@ -414,6 +415,9 @@ class GameMap:
 
 		var grass_percent = float(stats[TILE_TYPES.GRASS] - stats["shaggy"]) / size
 		var grass_score = 2
+		if grass_percent == 0:
+			grass_score = 0
+
 		if grass_percent > 0.6:
 			grass_score = 8
 
@@ -424,12 +428,12 @@ class GameMap:
 			grass_score -= 3
 
 		var shaggy_percent = float(stats["shaggy"] + stats[TILE_TYPES.WEEDS]) / size
-		var shaggy_score = 4
+		var shaggy_score = 5
 		if shaggy_percent > 0.3:
 			shaggy_score = 0
 
 		var dirt_percent = float(stats[TILE_TYPES.DIRT]) / size
-		var dirt_score = 9
+		var dirt_score = 8
 		if dirt_percent > 0.6:
 			dirt_score = 2
 		elif dirt_percent > 0.4:
@@ -437,12 +441,15 @@ class GameMap:
 		elif dirt_percent > 0.1:
 			dirt_score = 5
 
-		var flowers_percent = float(stats["flowers"]) / size
+		var flowers_percent = float(stats["flowers"]) / (size / 2)
 		var grown_flowers_percent = float(stats["grown_flowers"]) / float(stats["flowers"])
 		var flowers_score = 0
 		if flowers_percent > 0:
-			flowers_score = 6
+			flowers_score = 1
+			
 			if flowers_percent > 0.2:
+				flowers_score = 4
+			if flowers_percent > 0.5:
 				flowers_score = 8
 			if grown_flowers_percent > 0.5:
 				flowers_score += 3

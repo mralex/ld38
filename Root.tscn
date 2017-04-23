@@ -389,7 +389,12 @@ and you alone, to keep your garden well maintained.
 Every morning a representative of the home-owners community will give you a report, 
 and a commensurate amount of award money for your hard work.
 
-Good luck!"
+Good luck!
+
+(Notes:
+  - Press SPACE to pause, or use the time controls at the bottom right.
+  - Use the menu on the right to dig dirt, place things in your garden, and mow the lawn)
+"
 dialog/hide_on_ok = true
 
 [connection signal="button_up" from="UI/NormalButton" to="UI" method="_on_NormalButton_button_up"]
