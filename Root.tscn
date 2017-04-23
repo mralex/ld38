@@ -225,6 +225,7 @@ button/selected = 0
 
 [node name="ConstructionMenu" type="VButtonArray" parent="UI"]
 
+visibility/visible = false
 anchor/right = 1
 focus/ignore_mouse = false
 focus/stop_mouse = true

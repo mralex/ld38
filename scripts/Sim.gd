@@ -24,6 +24,18 @@ const tile_prices = {
 	TILE_TYPES.DIRT: 1,
 }
 
+const BASE_AWARD_MONEY = 500
+const BASE_GRASS_GROWTH_RATE = 0.02
+const BASE_FLOWER_GROWTH_RATE = 0.2
+const TALL_GRASS_BASE_HEIGHT = 75
+const FLOWER_GROWN_AMOUNT = 50
+const INITIAL_WATER_DISTANCE = 10000
+
+const TICKS_PER_MINUTE = 10
+
+# 6am
+const START_TIME = TICKS_PER_MINUTE * 60 * 6
+
 class GameClock:
 	signal tick
 	var timeMultiplier = 1.0
@@ -31,10 +43,10 @@ class GameClock:
 	var timeToProcess = 0
 
 	# Start the game at 6am
-	var ticks = 7200
+	var ticks = START_TIME
 
-	var ticksPerMinute = 15
-	var ticksPerDay = 15 * 60 * 24
+	var ticksPerMinute = TICKS_PER_MINUTE
+	var ticksPerDay = TICKS_PER_MINUTE * 60 * 24
 	var minutes = 0
 	var minutesLastTick = 0
 
@@ -80,12 +92,6 @@ class GameClock:
 
 		timeToProcess = 0.0
 		timeStep = 1 / (60.0 * timeMultiplier)
-
-# Dumb default
-const DEFAULT_GROWTH_RATE = 0.2
-const TALL_GRASS_BASE_HEIGHT = 75
-const FLOWER_GROWN_AMOUNT = 50
-const INITIAL_WATER_DISTANCE = 10000
 
 class GameTile:
 	var position = Vector2(0, 0)
@@ -151,11 +157,17 @@ class GameTile:
 		age = -1
 		added_at = -1
 		growth_amount = 0.0
+		
+		var base_growth_rate = 0
+		var growth_rate_mod = 6
 
-		if type == TILE_TYPES.WATER or type == TILE_TYPES.CONCRETE or type == TILE_TYPES.DIRT:
-			growth_rate = 0.0
-		else:
-			growth_rate = 0.01 + (randf() / 6) * 0.5
+		if type == TILE_TYPES.GRASS:
+			base_growth_rate = BASE_GRASS_GROWTH_RATE
+			growth_rate_mod = 24
+		elif type == TILE_TYPES.ROSES || type == TILE_TYPES.DAFODILS || type == TILE_TYPES.ORCHIDS:
+			base_growth_rate = BASE_FLOWER_GROWTH_RATE
+			
+		growth_rate = base_growth_rate + (randf() / growth_rate_mod) * 0.5
 
 	func get_sprite():
 		if (type == TILE_TYPES.ROSES || type == TILE_TYPES.DAFODILS || type == TILE_TYPES.ORCHIDS) && growth_amount < FLOWER_GROWN_AMOUNT:
@@ -431,6 +443,7 @@ class GameMap:
 		stats["flowers_score"] = flowers_score
 
 		var score = base_score / 32.0
+		stats["score_float"] = score
 		stats["score"] = score * 10
 
 		return stats
@@ -438,6 +451,11 @@ class GameMap:
 	func refresh_rating():
 		var stats = rate_map()
 		rating = stats["score"]
+	
+	func award_prize_money(stats):
+		var award = stats["score_float"] * BASE_AWARD_MONEY
+		money += award
+		return award
 
 const mapSize = Vector2(32, 23)
 var clock

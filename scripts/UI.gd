@@ -100,11 +100,14 @@ func _on_FastButton_button_up():
 func _on_PauseButton_button_up():
 	emit_signal("speed_pause")
 
-func check_judge(msg=""):
+func check_judge():
 	if simNode.clock.ticks > 0 && simNode.clock.ticks % simNode.clock.ticksPerDay == 0:
 		# Show judgement every day
+		var rating = simNode.map.rate_map()
+		var award = simNode.map.award_prize_money(rating)
+		
 		var judgementPopup = get_node("JudgeDialog")
-		judgementPopup.set_text("The neighbours think your garden is pretty nice. Keep up the good work!")
+		judgementPopup.set_text("The neighbours think your garden is pretty nice. Keep up the good work!\n\nYou've been awarded $%.2f" % award)
 		judgementPopup.popup_centered()
 		emit_signal("speed_pause")
 
