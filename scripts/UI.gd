@@ -118,7 +118,9 @@ func check_judge():
 		var award = simNode.map.award_prize_money(rating)
 
 		var judgementPopup = get_node("JudgeDialog")
-		judgementPopup.set_text("The neighbours think your garden is pretty nice. Keep up the good work!\n\nYou've been awarded $%.2f" % award)
+		var judgement = judgementPopup.judge_map_stats(rating)
+		#judgementPopup.set_text("The neighbours think your garden is pretty nice. \n\nYou've been awarded $%.2f" % award)
+		judgementPopup.set_text("%sYou've been awarded $%.2f" % [judgement, award])
 		judgementPopup.popup_centered()
 		emit_signal("speed_pause")
 

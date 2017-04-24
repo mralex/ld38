@@ -441,9 +441,8 @@ class GameMap:
 
 		var grass_percent = float(stats[TILE_TYPES.GRASS] - stats["shaggy"]) / size
 		var grass_score = 2
-		if grass_percent == 0:
+		if grass_percent < 0.2:
 			grass_score = 0
-
 		if grass_percent > 0.6:
 			grass_score = 8
 
@@ -486,6 +485,7 @@ class GameMap:
 		stats["shaggy_score"] = shaggy_score
 		stats["dirt_score"] = dirt_score
 		stats["flowers_score"] = flowers_score
+		stats["grown_flowers_percent"] = grown_flowers_percent
 
 		var score = base_score / 32.0
 		stats["score_float"] = score
