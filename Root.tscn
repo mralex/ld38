@@ -276,6 +276,7 @@ button/selected = 0
 
 [node name="OverlayShade" type="Panel" parent="UI"]
 
+visibility/visible = false
 visibility/opacity = 0.6
 focus/ignore_mouse = true
 focus/stop_mouse = false

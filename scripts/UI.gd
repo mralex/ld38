@@ -144,10 +144,11 @@ func open_pause_dialog():
 
 func hide_pause_dialog():
 	_on_resume_pause_popup()
-	overlayShade.hide()
+
 
 func _on_resume_pause_popup():
 	get_node("PauseDialog").hide()
+	overlayShade.hide()
 	emit_signal("resume_game")
 
 func _on_exit_desk_pause_popup():
