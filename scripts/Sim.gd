@@ -498,7 +498,7 @@ class GameMap:
 		rating = stats["score"]
 
 	func award_prize_money(stats):
-		var award = stats["score_float"] * BASE_AWARD_MONEY
+		var award = stats["score_float"] * 0.6 * BASE_AWARD_MONEY
 		money += award
 		return award
 

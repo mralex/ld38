@@ -161,6 +161,9 @@ func _interact_tile(tilePos):
 		simNode.map.mow_grass(tilePos.x, tilePos.y)
 
 func _construct_tile(tilePos):
+	if simNode.map.money <= 0:
+		return
+
 	if construction_mode == CONSTRUCTION_MODE.PATH:
 		simNode.map.lay_path(tilePos.x, tilePos.y)
 	elif construction_mode == CONSTRUCTION_MODE.ROSES:

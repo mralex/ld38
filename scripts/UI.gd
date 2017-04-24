@@ -5,6 +5,7 @@ var rootNode
 
 var constructionUI
 var jobUI
+var overlayShade;
 
 signal speed_normal
 signal speed_fast
@@ -28,6 +29,8 @@ func _ready():
 
 	jobUI = get_node("JobMenu")
 	jobUI.connect("button_selected", self, "_on_job_button_selected")
+
+	overlayShade = get_node("OverlayShade")
 
 	get_node("JudgeDialog").connect("confirmed", self, "_on_close_judge_popup")
 	get_node("IntroDialog").connect("confirmed", self, "_on_close_judge_popup")
@@ -118,24 +121,30 @@ func check_judge():
 		var award = simNode.map.award_prize_money(rating)
 
 		var judgementPopup = get_node("JudgeDialog")
+
 		var judgement = judgementPopup.judge_map_stats(rating)
 		#judgementPopup.set_text("The neighbours think your garden is pretty nice. \n\nYou've been awarded $%.2f" % award)
 		judgementPopup.set_text("%sYou've been awarded $%.2f" % [judgement, award])
 		judgementPopup.popup_centered()
+		overlayShade.show()
 		emit_signal("speed_pause")
 
 func _on_close_judge_popup():
 	emit_signal("speed_normal")
+	overlayShade.hide()
 
 func open_intro_dialog():
 	get_node("IntroDialog").popup_centered()
+	overlayShade.show()
 
 func open_pause_dialog():
 	var pauseDialog = get_node("PauseDialog")
 	pauseDialog.popup_centered()
+	overlayShade.show()
 
 func hide_pause_dialog():
 	_on_resume_pause_popup()
+	overlayShade.hide()
 
 func _on_resume_pause_popup():
 	get_node("PauseDialog").hide()

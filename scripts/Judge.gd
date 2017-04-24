@@ -88,7 +88,7 @@ func judge_map_stats(stats):
 func get_response(neighbor, stats):
 	if stats["dirt_score"] <= 3:
 		return responses["dirt"]
-	elif stats[TILE_TYPES.WEEDS] > 4:
+	elif stats[TILE_TYPES.WEEDS] > 4 && randi() % 10 == 1:
 		return responses["weeds"]
 	elif stats["shaggy_score"] == 0:
 		return responses["shaggy"]
